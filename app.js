@@ -11,6 +11,9 @@ app.use(express.static('public'))
 // 导入数据文件
 const newsList = require('./public/news/db.json');
 
+// 导入数据处理模块
+const service = require('./service.js');
+
 app.get('/getswipe', (req, res) => {
   console.log(req.query);
   res.jsonp({
@@ -29,6 +32,21 @@ app.get('/getNewsList', (req,res) => {
     newsList:newsList.news,
   })
 });
+
+app.get('/getnewsinfo/:id', (req,res) => {
+  res.jsonp({
+    status:0,
+    news:service.getnewsInfo(req.params.id),
+  });
+})
+
+app.get('/getcomments/:id', (req,res) => {
+  let comments = service.getcomments(req.params.id,req.query.pageindex);
+  res.jsonp({
+    status:0,
+    comments,
+  });
+})
 
 app.listen(58888, '127.0.0.1', () => {
   console.log('正在监听http://127.0.0.1:58888')
