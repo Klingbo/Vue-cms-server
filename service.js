@@ -1,5 +1,7 @@
 const newsinfoDB = require('./public/news/newsinfo.json');
-const commentsDB = require('./public/news/comment.json')
+const commentsDB = require('./public/news/comment.json');
+const fs = require('fs');
+const path = require('path');
 
 exports.getnewsInfo = id => {
   let newsList = newsinfoDB.news;
@@ -22,4 +24,17 @@ exports.getcomments = (id,pageindex) => {
     }
   });
   return comments
-}
+};
+
+exports.addcomments = (obj) => {
+  if(!obj.comments.user_name) {
+    obj.comments["user_name"] = "匿名用户";
+  }
+  let newsList = commentsDB.news_comments;
+  newsList.forEach(element => {
+    if(element.id == parseInt(obj.id)) {
+      element.comments.push(obj.comments);
+    }
+  });
+  fs.writeFileSync(path.join(__dirname,'/public/news/comment.json'),JSON.stringify(commentsDB), {encoding:'utf8'});
+};

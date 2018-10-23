@@ -5,8 +5,17 @@ const express = require('express');
 // 创建express对象
 const app = express();
 
+// 导入cors
+const cors = require('cors');
+// 导入body-parser
+const bodyParser = require('body-parser');
+
 // 加载静态资源
-app.use(express.static('public'))
+app.use(express.static('public'));
+// 加载cors
+app.use(cors());
+// 加载body-parser
+app.use(bodyParser({extended:true}))
 
 // 导入数据文件
 const newsList = require('./public/news/db.json');
@@ -15,7 +24,6 @@ const newsList = require('./public/news/db.json');
 const service = require('./service.js');
 
 app.get('/getswipe', (req, res) => {
-  console.log(req.query);
   res.jsonp({
     status:0,
     msg:[
@@ -27,25 +35,32 @@ app.get('/getswipe', (req, res) => {
 });
 
 app.get('/getNewsList', (req,res) => {
-  res.jsonp({
+  res.json({
     status:0,
     newsList:newsList.news,
   })
 });
 
 app.get('/getnewsinfo/:id', (req,res) => {
-  res.jsonp({
+  res.json({
     status:0,
     news:service.getnewsInfo(req.params.id),
   });
-})
+});
 
 app.get('/getcomments/:id', (req,res) => {
   let comments = service.getcomments(req.params.id,req.query.pageindex);
-  res.jsonp({
+  res.json({
     status:0,
     comments,
   });
+});
+
+app.post('/addcomment',(req,res) => {
+  service.addcomments(req.body);
+  res.send({
+    status:0,
+  })
 })
 
 app.listen(58888, '127.0.0.1', () => {
