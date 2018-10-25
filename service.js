@@ -9,6 +9,7 @@ const goodsinfopicDB = require("./public/goods/goodsinfopic.json");
 const goodsinfoDB = require("./public/goods/goodsinfo.json");
 const goodsdescriptionDB = require("./public/goods/goodsdescription.json");
 const goodscommentDB = require("./public/goods/goodscomment.json");
+const cartDB = require('./public/cart/cart.json');
 const fs = require("fs");
 const path = require("path");
 
@@ -145,6 +146,12 @@ exports.getgoodsdescription = goods_id => {
   });
   return temp;
 };
+
+exports.addtocart = list => {
+  cartDB.info = list;
+  _save('./public/cart/cart.json', cartDB);
+}
+
 
 function _save(pathStr, db) {
   fs.writeFileSync(path.join(__dirname, pathStr), JSON.stringify(db), {
